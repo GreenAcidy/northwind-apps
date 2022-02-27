@@ -9,24 +9,20 @@ namespace NorthwindServiceCoreClient // Note: actual namespace depends on the pr
         public static void Main(string[] args)
         {
             const string serviceUri = "https://services.odata.org/V3/Northwind/Northwind.svc/";
-            var entities = new NorthwindModel.NorthwindEntities(new Uri(serviceUri));
+            var entities = new NorthwindModel.NorthwindEntities(new Uri(serviceUri)); // breakpoint #1.1
 
             IAsyncResult asyncResult = entities.Employees.BeginExecute((ar) =>
             {
-                Console.WriteLine("People in Northwind service:");
-                var people = entities.Employees.EndExecute(ar);
+                var employees = entities.Employees.EndExecute(ar); // breakpoint #1.2
 
-                foreach (var person in people)
+                Console.WriteLine("Employees in Northwind service:");
+                foreach (var person in employees)
                 {
                     Console.WriteLine("\t{0} {1}", person.FirstName, person.LastName);
                 }
-
             }, null);
 
-            WaitHandle.WaitAny(new[] { asyncResult.AsyncWaitHandle });
-
-            Console.WriteLine("Press any key to continue.");
-            Console.ReadLine();
+            WaitHandle.WaitAny(new[] { asyncResult.AsyncWaitHandle }); // breakpoint #1.3
         }
     }
 }
